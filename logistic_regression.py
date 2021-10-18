@@ -2,10 +2,11 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import dataframe
+import plotly.graph_objects as go
 
 
 iris_df = dataframe.df
-iris_target = dataframe.target
+iris_target = dataframe.target_log
 model = dataframe.gnb
 
 
@@ -40,6 +41,23 @@ def select_petal_width():
 def get_predicted_value(sepal_length, sepal_width, petal_length, petal_width):
     return model.predict(np.array([[sepal_length, sepal_width, petal_length, petal_width]]))
 
+def generate_clf_graph(petal_length, petal_width, sepal_length, pred):
+    fig = go.Figure(data = go.Scatter3d(x=iris_df['petal length (cm)'].values, 
+                                        y=iris_df['petal width (cm)'].values, 
+                                        z=iris_df['sepal length (cm)'].values,
+                                        mode='markers',
+                                        marker=dict(color=iris_target)))
+
+    fig.add_trace(
+            go.Scatter3d(x=np.array([petal_length]),
+                       y=np.array([petal_width]),
+                       z=np.array([sepal_length]),
+                       mode='markers',
+            )
+    )
+
+    return fig
+
 def app():
     sepal_length = select_sepal_length()
     sepal_width = select_sepal_width()
@@ -53,4 +71,7 @@ def app():
 
     st.write('Predição:', prediction[0])
 
+    clf_graph = generate_clf_graph(petal_length, petal_width, sepal_length, prediction[0])
+    st.plotly_chart(clf_graph)
     
+    st.write('Matriz de Confusão:', dataframe.log_matrix)

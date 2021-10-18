@@ -5,7 +5,7 @@ import dataframe
 import plotly.graph_objects as go
 
 iris_df = dataframe.df
-iris_target = dataframe.target
+iris_target = dataframe.target_gnb
 model = dataframe.log
 
 
@@ -72,3 +72,5 @@ def app():
 
     clf_graph = generate_clf_graph(petal_length, petal_width, sepal_length, prediction[0])
     st.plotly_chart(clf_graph)
+
+    st.write('Matriz de Confusão:', dataframe.gnb_matrix)
